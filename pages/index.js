@@ -5,8 +5,10 @@ import { poppins, roboto } from '../app/fonts'
 import { Swiper, SwiperSlide } from 'swiper/react';
 import CustomPagination from './CustomPagination'; // 引入自訂分頁指示器
 import StarRating from './StarRating';
+import SwipeableTable from './SwipeableTable';
 // Import Swiper styles
 import 'swiper/css';
+
  
   
   
@@ -813,11 +815,9 @@ function Page7() {
         </Text>
 
       </Box>
-      <Box
-        height="910px"
-      >
-
-        
+      <Box>
+      
+        <SwipeableTable />
       </Box>
     </Box>
 );
