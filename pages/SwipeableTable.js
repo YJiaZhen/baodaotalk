@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Box, Flex, Text, Stack } from '@chakra-ui/react';
+import React, { useRef } from 'react';
+import { Box, Flex, Text, Button } from '@chakra-ui/react';
 import { poppins, roboto } from '../app/fonts';
-
+import { useBreakpointValue } from '@chakra-ui/media-query';
 // 表格數據
 const data = [
   { name: 'Number of students', baodao: '1-on-1 classes', chinese: 'Group classes', other: '1-on-1 or group' },
@@ -15,88 +15,408 @@ const data = [
   { name: 'Payment method', baodao: 'Small installments', chinese: 'Long-term and large', other: 'Small installments' },
   { name: 'Refund service', baodao: 'Complete refund policy', chinese: 'Not necessarily', other: 'Only refund to the platform account' },
 ];
+// 三角形
+const Triangle = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <path d="M2.39019 18.0983L10.6151 3.89171C11.0696 3.10655 11.2969 2.71396 11.5935 2.58211C11.8521 2.4671 12.1474 2.4671 12.4061 2.58211C12.7026 2.71396 12.9299 3.10654 13.3844 3.89171L21.6093 18.0983C22.0655 18.8863 22.2936 19.2803 22.2599 19.6037C22.2305 19.8857 22.0827 20.142 21.8534 20.3088C21.5904 20.5 21.1352 20.5 20.2246 20.5H3.77487C2.86435 20.5 2.40908 20.5 2.14613 20.3088C1.91677 20.142 1.769 19.8857 1.73959 19.6037C1.70588 19.2803 1.93398 18.8863 2.39019 18.0983Z" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+// 圓形
+const Circle = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+  <circle cx="12" cy="12" r="11" stroke="#313030" stroke-width="2"/>
+  <circle cx="12" cy="12" r="7" stroke="#313030" stroke-width="2"/>
+</svg>
+);
+// X
+const Xclose = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+  <path d="M18 6L6 18M6 6L18 18" stroke="#313030" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+);
+
 
 const SwipeableTable = () => {
-  // 是否顯示提示的狀態
-  const [showHint, setShowHint] = useState(true);
-  // 滾動位置
-  const [scrollPosition, setScrollPosition] = useState(0);
-  // 參考滾動容器的引用
+  const [showHint, setShowHint] = React.useState(true);
   const scrollContainerRef = useRef(null);
 
-  useEffect(() => {
-    // 如果不需要顯示提示則返回
-    if (!showHint) return;
-    
-    // 設定 3 秒後隱藏提示
-    const timer = setTimeout(() => {
-      setShowHint(false);
-    }, 3000);
-
-    // 清除計時器
-    return () => clearTimeout(timer);
-  }, [showHint]);
-
-  // 滾動事件處理
   const handleScroll = () => {
     if (scrollContainerRef.current) {
-      setScrollPosition(scrollContainerRef.current.scrollLeft);
       setShowHint(false);
     }
   };
-
-  // 列寬設置
-  const columnWidths = [135, 185, 185, 185];
-  const totalWidth = columnWidths.reduce((a, b) => a + b, 0);
+  
+  const isXL = useBreakpointValue({ base: false, xl: true });
 
   return (
-    <Box position="relative" width="100%" overflowX="hidden" padding="0px 16px 0px 16px">
-      <Flex ref={scrollContainerRef} overflowX="auto" onScroll={handleScroll} direction="column">
-        {data.map((item, index) => (
-          <Flex
-            key={index}
-            bg={index % 2 === 0 ? '#D9D9D9' : 'var(--White--Background)'}
-            borderBottom="1px solid #E2E8F0"
-            p={4}
-            width={`calc(${320 + totalWidth}px + 32px)`} // Add extra padding for horizontal scroll
-            align="center"
-            justify="space-between"
-          >
-            <Box width={`${columnWidths[0]}px`} color="#262626" fontFamily={poppins.style.fontFamily} fontSize="16px" fontWeight="700">
-              {item.name}
-            </Box>
+    <Box position="relative" width="100%"  padding="16px" >
+      {isXL ? (
+      <Flex borderRadius="8px" direction="row" overflowX="auto" onScroll={handleScroll} ref={scrollContainerRef} alignItems="center" justifyContent="center">
+      
+        {/* 第一個區塊 */}
+        <Flex direction="column" width="258px"  marginTop="-40px">
+
+          {data.map((item, index) => (
             <Flex
-            
-              bg={index % 2 === 0 ? '#2F5289' : '#385C95'}
-              // width={`${columnWidths[1]}px`}
-              width="325px"
-              color="var(--White--Background)"
-              fontFamily={poppins.style.fontFamily}
-              fontSize="16px"
-              fontWeight="700"
+              
+              key={index}
+              bg={index % 2 === 0 ? '#D9D9D9' : 'var(--White--Background)'}
+              // borderBottom="1px solid #E2E8F0"
+              width="258px" // 固定寬度
+              height="84px" // 固定高度
+              p={4}
               align="center"
-              justify="center"
-              textAlign="center"
-              direction="column"
+              justify="space-between"
+              borderTopLeftRadius={item.name === 'Number of students' ? '8px' : '0px'}
+              borderBottomLeftRadius={item.name === 'Refund service' ? '8px' : '0px'}
             >
-              <Box width="20px" height="20px" flexShrink="0">
+              
+              <Text color="#262626" fontFamily={poppins.style.fontFamily} fontSize="16px" fontWeight="700">
+                {item.name}
+              </Text>
+            </Flex>
+          ))}
+          
+        </Flex>
+
+        {/* 第二個區塊 */}
+        <Flex direction="column" width="300px" >
+        <Flex borderTopRadius="8px" bg="#385C95" height="40px" align="center" justify="center">
+            <Text color="white" fontFamily={poppins.style.fontFamily} fontSize="16px" fontWeight="700">
+              BaoDao Talk
+            </Text>
+          </Flex>
+          {data.map((item, index) => (
+            <Flex
+              key={index}
+              bg={index % 2 === 0 ? '#2F5289' : '#385C95'}
+              borderBottom="1px solid #385C95"
+              borderTop="1px solid #2F5289"
+              // width="157px" // 固定寬度
+              height="84px" // 固定高度
+              p={4}
+              align="center"
+              justify="space-between"
+              
+            >
+              <Flex
+                width="100%"
+                color="var(--White--Background)"
+                fontFamily={poppins.style.fontFamily}
+                fontSize="16px"
+                fontWeight="700"
+                align="center"
+                justify="center"
+                textAlign="center"
+                direction="column"
+              >
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
                   <circle cx="10" cy="10" r="9" stroke="white" strokeWidth="2"/>
                   <circle cx="10" cy="10" r="5.66667" stroke="white" strokeWidth="2"/>
                 </svg>
-              </Box>
-              <Text>{item.baodao}</Text>
+                <Text>{item.baodao}</Text>
+              </Flex>
+              
             </Flex>
-            <Box width={`${columnWidths[2]}px`} color="#262626" fontFamily={poppins.style.fontFamily} fontSize="16px" fontWeight="700">
-              {item.chinese}
-            </Box>
-            <Box width={`${columnWidths[3]}px`} color="#262626" fontFamily={poppins.style.fontFamily} fontSize="16px" fontWeight="700">
-              {item.other}
-            </Box>
+            
+            
+          ))}
+          {/* Get started橘色按鈕區塊 */}
+          <Flex
+            bg="#2F5289"
+            width="300px" // 固定寬度
+            height="81px" // 固定高度
+            align="center"
+            justify="center"
+            borderBottomRadius="8px" // 只有底部邊角圓角
+            
+          >
+            <Button 
+              bg="var(--Secondary-200)"  
+              _hover={{ bg: '#FE9000' }}
+              display="flex"
+              width="134px"
+              height="40px"
+              padding="12px 24px"
+              justifyContent="center"
+              alignItems="center"
+              flexShrink="0"
+              borderRadius="4px"
+              >
+                <Text
+                  color="var(--White--Background)"
+                  fontFamily={roboto.style.fontFamily}
+                  fontSize="16px"
+                  fontStyle="normal"
+                  fontWeight="700"
+                  lineHeight="26px"
+                >
+                Get started
+                </Text>
+            
+            </Button>
           </Flex>
-        ))}
+        </Flex>
+
+        {/* 第三個區塊 */}
+        <Flex direction="column" width="300px" marginTop="-80px">
+        <Flex borderTopRadius="8px" bg="var(--Grey-100)" width="230px" height="40px"  alignItems="center" justifyContent="center" marginLeft="40px">
+            <Text color="var(--White--Background)" fontFamily={poppins.style.fontFamily} fontSize="16px" fontWeight="700">
+            Chinese language School
+            </Text>
+          </Flex>
+        
+          {data.map((item, index) => (
+            <Flex
+              key={index}
+              bg={index % 2 === 0 ? '#D9D9D9' : 'var(--White--Background)'}
+              // borderBottom="1px solid #E2E8F0"
+              width="300px" // 固定寬度
+              height="84px" // 固定高度
+              p={4}
+              align="center"
+              // justify="space-between"
+              justify="center" // 置中內容
+              textAlign="center" // 文字置中
+              direction="column" // 垂直排列
+            >
+              {['Group classes', 'Simplified Chinese', 'Not always', 'Varies by school', 'Long-term and large', 'Not necessarily'].includes(item.chinese) && <Triangle />}
+              {['Available'].includes(item.chinese) && <Circle />}
+              {['Not available'].includes(item.chinese) && <Xclose />}
+              <Text 
+                color="#262626" 
+                fontFamily={poppins.style.fontFamily} 
+                fontSize="16px" 
+                fontWeight="700"
+                >
+                {item.chinese}
+              </Text>
+            </Flex>
+          ))}
+        </Flex>
+
+        {/* 第四個區塊 */}
+        <Flex direction="column" width="300px" marginTop="-80px">
+        <Flex borderTopRadius="8px" bg="var(--Grey-100)" width="230px" height="40px"  alignItems="center" justifyContent="center" marginLeft="40px">
+            <Text color="var(--White--Background)" fontFamily={poppins.style.fontFamily} fontSize="16px" fontWeight="700">
+            Other Online Brands
+            </Text>
+          </Flex>
+          {data.map((item, index) => (
+            <Flex
+              key={index}
+              bg={index % 2 === 0 ? '#D9D9D9' : 'var(--White--Background)'}
+              // borderBottom="1px solid #E2E8F0"
+              width="300px" // 固定寬度
+              height="84px" // 固定高度
+              p={4}
+              align="center"
+              justify="center" // 置中內容
+              textAlign="center" // 文字置中
+              direction="column" // 垂直排列
+              borderTopRightRadius={item.name === 'Number of students' ? '8px' : '0px'} 
+              borderBottomRightRadius={item.name === 'Refund service' ? '8px' : '0px'} 
+              
+            >
+              {['Simplified Chinese', 'Prepared by tutors'].includes(item.other) && <Triangle />}
+              {['Small installments'].includes(item.other) && <Circle />}
+              {['No'].includes(item.other) && <Xclose />}
+              <Text color="#262626" fontFamily={poppins.style.fontFamily} fontSize="16px" fontWeight="700">
+                {item.other}
+              </Text>
+            </Flex>
+          ))}
+        </Flex>
       </Flex>
-      {showHint && (
+) : (
+  <Flex borderRadius="8px" direction="row" overflowX="auto" onScroll={handleScroll} ref={scrollContainerRef} alignItems="center" >
+      
+        {/* 第一個區塊 */}
+        <Flex direction="column" width="200px"  marginTop="-40px" position="sticky" left="0" zIndex="1" bg="white" 
+        _after={{
+          content: '""',
+          position: 'absolute', // 使用 absolute 定位偽元素
+          bottom: '-100',
+          left: '-2px',
+          width: '202px',
+          height: '1000px', // 根據需要設置底部區域的高度
+          bg: "#F9FAFC", // 設置底部背景顏色
+          zIndex: '-1', // 確保背景在內容下層
+        }}
+        >
+
+          {data.map((item, index) => (
+            <Flex
+              
+              key={index}
+              bg={index % 2 === 0 ? '#D9D9D9' : 'var(--White--Background)'}
+              // borderBottom="1px solid #E2E8F0"
+              width="200px" // 固定寬度
+              height="84px" // 固定高度
+              p={4}
+              align="center"
+              justify="space-between"
+              borderTopLeftRadius={item.name === 'Number of students' ? '8px' : '0px'}
+              borderBottomLeftRadius={item.name === 'Refund service' ? '8px' : '0px'}
+            >
+              
+              <Text color="#262626" fontFamily={poppins.style.fontFamily} fontSize="16px" fontWeight="700">
+                {item.name}
+              </Text>
+            </Flex>
+          ))}
+          
+        </Flex>
+
+        {/* 第二個區塊 */}
+        <Flex direction="column" width="200px" >
+        <Flex borderTopRadius="8px" bg="#385C95" height="40px" align="center" justify="center">
+            <Text color="white" fontFamily={poppins.style.fontFamily} fontSize="16px" fontWeight="700">
+              BaoDao Talk
+            </Text>
+          </Flex>
+          {data.map((item, index) => (
+            <Flex
+              key={index}
+              bg={index % 2 === 0 ? '#2F5289' : '#385C95'}
+              borderBottom="1px solid #385C95"
+              borderTop="1px solid #2F5289"
+              // width="157px" // 固定寬度
+              height="84px" // 固定高度
+              p={4}
+              align="center"
+              justify="space-between"
+              
+            >
+              <Flex
+                width="100%"
+                color="var(--White--Background)"
+                fontFamily={poppins.style.fontFamily}
+                fontSize="16px"
+                fontWeight="700"
+                align="center"
+                justify="center"
+                textAlign="center"
+                direction="column"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <circle cx="10" cy="10" r="9" stroke="white" strokeWidth="2"/>
+                  <circle cx="10" cy="10" r="5.66667" stroke="white" strokeWidth="2"/>
+                </svg>
+                <Text>{item.baodao}</Text>
+              </Flex>
+              
+            </Flex>
+            
+            
+          ))}
+          {/* Get started橘色按鈕區塊 */}
+          <Flex
+            bg="#2F5289"
+            width="200px" // 固定寬度
+            height="81px" // 固定高度
+            align="center"
+            justify="center"
+            borderBottomRadius="8px" // 只有底部邊角圓角
+            
+          >
+            <Button 
+              bg="var(--Secondary-200)"  
+              _hover={{ bg: '#FE9000' }}
+              display="flex"
+              width="134px"
+              height="40px"
+              padding="12px 24px"
+              justifyContent="center"
+              alignItems="center"
+              flexShrink="0"
+              borderRadius="4px"
+              >
+                <Text
+                  color="var(--White--Background)"
+                  fontFamily={roboto.style.fontFamily}
+                  fontSize="16px"
+                  fontStyle="normal"
+                  fontWeight="700"
+                  lineHeight="26px"
+                >
+                Get started
+                </Text>
+            
+            </Button>
+          </Flex>
+        </Flex>
+
+        {/* 第三個區塊 */}
+        <Flex direction="column" width="300px" marginTop="-80px">
+        <Flex borderTopRadius="8px" bg="var(--Grey-100)" width="230px" height="40px"  alignItems="center" justifyContent="center" marginLeft="40px">
+            <Text color="var(--White--Background)" fontFamily={poppins.style.fontFamily} fontSize="16px" fontWeight="700">
+            Chinese language School
+            </Text>
+          </Flex>
+        
+          {data.map((item, index) => (
+            <Flex
+              key={index}
+              bg={index % 2 === 0 ? '#D9D9D9' : 'var(--White--Background)'}
+              // borderBottom="1px solid #E2E8F0"
+              width="300px" // 固定寬度
+              height="84px" // 固定高度
+              p={4}
+              align="center"
+              // justify="space-between"
+              justify="center" // 置中內容
+              textAlign="center" // 文字置中
+              direction="column" // 垂直排列
+            >
+              {['Group classes', 'Simplified Chinese', 'Not always', 'Varies by school', 'Long-term and large', 'Not necessarily'].includes(item.chinese) && <Triangle />}
+              {['Available'].includes(item.chinese) && <Circle />}
+              {['Not available'].includes(item.chinese) && <Xclose />}
+              <Text 
+                color="#262626" 
+                fontFamily={poppins.style.fontFamily} 
+                fontSize="16px" 
+                fontWeight="700"
+                >
+                {item.chinese}
+              </Text>
+            </Flex>
+          ))}
+        </Flex>
+
+        {/* 第四個區塊 */}
+        <Flex direction="column" width="300px" marginTop="-80px">
+        <Flex borderTopRadius="8px" bg="var(--Grey-100)" width="230px" height="40px"  alignItems="center" justifyContent="center" marginLeft="40px">
+            <Text color="var(--White--Background)" fontFamily={poppins.style.fontFamily} fontSize="16px" fontWeight="700">
+            Other Online Brands
+            </Text>
+          </Flex>
+          {data.map((item, index) => (
+            <Flex
+              key={index}
+              bg={index % 2 === 0 ? '#D9D9D9' : 'var(--White--Background)'}
+              // borderBottom="1px solid #E2E8F0"
+              width="300px" // 固定寬度
+              height="84px" // 固定高度
+              p={4}
+              align="center"
+              justify="center" // 置中內容
+              textAlign="center" // 文字置中
+              direction="column" // 垂直排列
+              borderTopRightRadius={item.name === 'Number of students' ? '8px' : '0px'} 
+              borderBottomRightRadius={item.name === 'Refund service' ? '8px' : '0px'} 
+              
+            >
+              {['Simplified Chinese', 'Prepared by tutors'].includes(item.other) && <Triangle />}
+              {['Small installments'].includes(item.other) && <Circle />}
+              {['No'].includes(item.other) && <Xclose />}
+              <Text color="#262626" fontFamily={poppins.style.fontFamily} fontSize="16px" fontWeight="700">
+                {item.other}
+              </Text>
+            </Flex>
+          ))}
+        </Flex>
+        {showHint && (
         <Box
           position="absolute"
           top="50%"
@@ -108,6 +428,7 @@ const SwipeableTable = () => {
           alignItems="center"
           justifyContent="center"
           flexShrink="0"
+          zIndex="1"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="122" height="122" viewBox="0 0 122 122" fill="none">
             <g clipPath="url(#clip0_12744_10698)">
@@ -124,6 +445,10 @@ const SwipeableTable = () => {
           </Box>
         </Box>
       )}
+      </Flex>
+      
+      )}
+      
     </Box>
   );
 };
